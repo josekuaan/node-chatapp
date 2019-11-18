@@ -13,7 +13,7 @@ var socket = io();
    })
 
 
-   socket.emit("createMessage",{
-       from:"anyi@gmail.com",
-       text:"hey you"
-   })
+//    socket.emit("createMessage",{
+//        from:"anyi@gmail.com",
+//        text:"hey you"
+//    })

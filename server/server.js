@@ -27,11 +27,26 @@ var io = socketIO(server)
      socket.on("createMessage", (message)=>{
        console.log("createMessage", message)
 
+        socket.emit('newMessage',{
+            from:'Admin',
+            text:'Welcome to the group'
+        })
+        socket.broadcast.emit('newMessage',{
+            from:'Admin',
+            text:'someone join using the group link'
+        })
+
        io.emit('newMessage', {
            from:message.from,
            text:message.text,
            createdAt: new Date().getTime()
        })// this emit event to every connected user
+
+    // socket.broadcast.emit('newMessage',{
+    //        from:message.from,
+    //        text:message.text,
+    //        createdAt: new Date().getTime()
+    // })// this emit event to every connected user but one
      })
 
    socket.on("disconnect", ()=>{
