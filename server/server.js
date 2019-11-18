@@ -18,14 +18,20 @@ var io = socketIO(server)
    console.log("new user connected")
 
 
-     socket.emit("newMessage",{
-         from:"mike@exampl.gmail",
-         text:"hey how far",
-         createdAt:12334
-     } )
+    //  socket.emit("newMessage",{
+    //      from:"mike@exampl.gmail",
+    //      text:"hey how far",
+    //      createdAt:12334
+    //  } ) // this will emit only to one user;
 
      socket.on("createMessage", (message)=>{
        console.log("createMessage", message)
+
+       io.emit('newMessage', {
+           from:message.from,
+           text:message.text,
+           createdAt: new Date().getTime()
+       })// this emit event to every connected user
      })
 
    socket.on("disconnect", ()=>{
