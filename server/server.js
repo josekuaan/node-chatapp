@@ -4,6 +4,7 @@ const express = require("express")
 
 const socketIO = require("socket.io")
 
+const {generateMessage} = require("./utils/message")
 
 const publicPath = path.join(__dirname, '../public')
 const port = process.env.PORT || 3000;
@@ -17,42 +18,33 @@ var io = socketIO(server)
  io.on("connection", (socket)=>{
    console.log("new user connected")
 
+        // this will emit only to one user;
+        socket.emit('newMessage',generateMessage('Admin','Welcome to the group'));
 
-    //  socket.emit("newMessage",{
-    //      from:"mike@exampl.gmail",
-    //      text:"hey how far",
-    //      createdAt:12334
-    //  } ) // this will emit only to one user;
+        // this emit event to every connected user but the user that join
+        socket.broadcast.emit('newMessage',
+        generateMessage('Admin','someone join using the group link'))
 
-     socket.on("createMessage", (message)=>{
-       console.log("createMessage", message)
+        socket.on('createMessage', (message)=>{
+            // this emit event to every connected user
+            io.emit('newMessage', generateMessage(message.from,message.text))
 
-        socket.emit('newMessage',{
-            from:'Admin',
-            text:'Welcome to the group'
+                //socket.broadcast.emit('newMessage', {
+                //        from:message.from,
+                //        text:message.text,
+                //        createdAt: new Date().getTime()
+                //    })
         })
-        socket.broadcast.emit('newMessage',{
-            from:'Admin',
-            text:'someone join using the group link'
-        })
+       
 
-       io.emit('newMessage', {
-           from:message.from,
-           text:message.text,
-           createdAt: new Date().getTime()
-       })// this emit event to every connected user
-
-    // socket.broadcast.emit('newMessage',{
-    //        from:message.from,
-    //        text:message.text,
-    //        createdAt: new Date().getTime()
-    // })// this emit event to every connected user but one
+       socket.on("disconnect", ()=>{
+        console.log("client disconnected")
+    })
+ 
      })
 
-   socket.on("disconnect", ()=>{
-       console.log("client disconnected")
-   })
- })
+
+  
 
 app.use(express.static(publicPath)) 
 
