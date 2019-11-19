@@ -4,7 +4,7 @@ const express = require("express")
 
 const socketIO = require("socket.io")
 
-const {generateMessage} = require("./utils/message")
+const {generateMessage,generateLocationMessage} = require("./utils/message")
 
 const publicPath = path.join(__dirname, '../public')
 const port = process.env.PORT || 3000;
@@ -25,15 +25,15 @@ var io = socketIO(server)
         socket.broadcast.emit('newMessage',
         generateMessage('Admin','someone join using the group link'))
 
-        socket.on('createMessage', (message)=>{
+        socket.on('createMessage', (message,cb)=>{
             // this emit event to every connected user
             io.emit('newMessage', generateMessage(message.from,message.text))
+              cb();
+        })
+        socket.on('createLocation',(cords)=>{
 
-                //socket.broadcast.emit('newMessage', {
-                //        from:message.from,
-                //        text:message.text,
-                //        createdAt: new Date().getTime()
-                //    })
+            io.emit('newLocationMessage',generateLocationMessage('Admin',cords.latitude,cords.longitude))
+
         })
        
 
