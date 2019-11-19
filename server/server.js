@@ -31,7 +31,7 @@ var io = socketIO(server)
               cb();
         })
         socket.on('createLocation',(cords)=>{
-
+console.log(cords)
             io.emit('newLocationMessage',generateLocationMessage('Admin',cords.latitude,cords.longitude))
 
         })
